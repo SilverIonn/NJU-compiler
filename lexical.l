@@ -5,8 +5,10 @@
 ID [a-zA-Z_][0-9a-zA-Z_]*
 
 COMMENT_1 "//"[^\n]*
-COMMENT_2 "/*"(.|\r|\n)*?"*/"
-COMMENT_ERR "/*"?(.|\r|\n)*?"*/"(.|\r|\n)*?"*/"
+COMMENT_2 "/*"(([^\*]*(\*[^\/])?)*)"*/"
+
+
+
 
 ws [ \t]+
 
@@ -49,7 +51,7 @@ WHILE "while"
 
 
 %%
-{COMMENT_ERR}	{printf("Error type A at line %d: Illegal comments.\n",yylineno);}
+
 {COMMENT_1}    	{;}
 {COMMENT_2} 	{;}
 {ws}		{;}
