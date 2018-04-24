@@ -1,15 +1,22 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "syntax.tab.c"
 
-extern FILE* yyin;
-extern int yylex();
-int main(int argc, char** argv) {
-	if (argc > 1) {
-		if (!(yyin = fopen(argv[1], "r"))) {
-			perror(argv[1]);
-			return 1;
-		}
+int main(int argc, char* argv[])
+{
+ 	if (argc <= 1) return 1;
+	FILE* fp = fopen(argv[1],"r");
+	if (!fp)
+	{
+		perror(argv[1]);
+		return 1;
+	}	
+	root=NULL;
+	yylineno=1;
+	yyrestart(fp);
+	yyparse();
+	if(errorCount == 0){
+		printTree(root,0);
 	}
-	while (yylex() != 0) ;
 	return 0;
 }

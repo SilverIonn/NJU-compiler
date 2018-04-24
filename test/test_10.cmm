@@ -1,11 +1,8 @@
 int main()
 {
-/*
-comment
-/*
-nested comment */
-*/
-*/
-int i = 1;
+
+int i = 1
+
+int j = 0
 
 }

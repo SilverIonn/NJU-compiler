@@ -1,3 +1,8 @@
+%{
+	#include "node.h"
+	#include "syntax.tab.h"
+	int errorCount = 0;
+%}
 
 %option yylineno
 
@@ -56,39 +61,39 @@ WHILE "while"
 {COMMENT_2} 	{;}
 {ws}		{;}
 \n		{;}
-{FLOAT_2}       {printf("FLOAT\n");}
-{FLOAT_2_ERR}   {printf("Error type A at line %d: Illegal float number '%s'\n",yylineno,yytext);}
-{FLOAT_1}       {printf("FLOAT\n");}
-{FLOAT_1_ERR}   {printf("Error type A at line %d: Illegal float number '%s'\n",yylineno,yytext);}
-{INT} 		{printf("INT\n");}
-{INT8_ERR}	{printf("Error type A at line %d: Illegal octal number '%s'\n",yylineno,yytext);}
-{INT16_ERR}      {printf("Error type A at line %d: Illegal hex number '%s'\n",yylineno,yytext);}
-{SEMI} 		{printf("SEMI\n");}
-{COMMA} 	{printf("COMMA\n");}
-{ASSIGNOP} 	{printf("ASSIGNOP\n");}
-{RELOP}	 	{printf("RELOP\n");}
-{PLUS} 		{printf("PLUS\n");}
-{MINUS} 	{printf("MINUS\n");}
-{STAR} 		{printf("STAR\n");}
-{DIV} 		{printf("DIV\n");}
-{AND} 		{printf("AND\n");}
-{OR} 		{printf("OR\n");}
-{DOT} 		{printf("DOT\n");}
-{NOT} 		{printf("NOT\n");}
-{TYPE} 		{printf("TYPE\n");}
-{LP} 		{printf("LP\n");}
-{RP} 		{printf("RP\n");}
-{LB} 		{printf("LB\n");}
-{RB} 		{printf("RB\n");}
-{LC} 		{printf("LC\n");}
-{RC} 		{printf("RC\n");}
-{STRUCT} 	{printf("STRUCT\n");}
-{RETURN} 	{printf("RETURN\n");}
-{IF} 		{printf("IF\n");}
-{ELSE} 		{printf("ELSE\n");}
-{WHILE} 	{printf("WHILE\n");}
-{ID}		{printf("ID\n");}
-.               {printf("Error type A at Line %d: Mysterious characters \'%s\'\n",yylineno, yytext);}
+{FLOAT_2}       {yylval.node=initNode("FLOAT",yytext);return FLOAT;}
+{FLOAT_2_ERR}   {errorCount++; printf("Error type A at line %d: Illegal floating point number '%s'\n",yylineno,yytext);return FLOAT;}
+{FLOAT_1}       {yylval.node=initNode("FLOAT",yytext);return FLOAT;}
+{FLOAT_1_ERR}   {errorCount++; printf("Error type A at line %d: Illegal floating point number '%s'\n",yylineno,yytext);return FLOAT;}
+{INT} 		{yylval.node=initNode("INT",yytext);return INT;}
+{INT8_ERR}	{errorCount++; printf("Error type A at line %d: Illegal octal number '%s'\n",yylineno,yytext);return INT;}
+{INT16_ERR}      {errorCount++; printf("Error type A at line %d: Illegal hexadecimal number '%s'\n",yylineno,yytext);return INT;}
+{SEMI} 		{yylval.node=initNode("SEMI",yytext);return SEMI;}
+{COMMA} 	{yylval.node=initNode("COMMA",yytext);return COMMA;}
+{ASSIGNOP} 	{yylval.node=initNode("ASSIGNOP",yytext);return ASSIGNOP;}
+{RELOP}	 	{yylval.node=initNode("RELOP",yytext);return RELOP;}
+{PLUS} 		{yylval.node=initNode("PLUS",yytext);return PLUS;}
+{MINUS} 	{yylval.node=initNode("MINUS",yytext);return MINUS;}
+{STAR} 		{yylval.node=initNode("STAR",yytext);return STAR;}
+{DIV} 		{yylval.node=initNode("DIV",yytext);return DIV;}
+{AND} 		{yylval.node=initNode("AND",yytext);return AND;}
+{OR} 		{yylval.node=initNode("OR",yytext);return OR;}
+{DOT} 		{yylval.node=initNode("DOT",yytext);return DOT;}
+{NOT} 		{yylval.node=initNode("NOT",yytext);return NOT;}
+{TYPE} 		{yylval.node=initNode("TYPE",yytext);return TYPE;}
+{LP} 		{yylval.node=initNode("LP",yytext);return LP;}
+{RP} 		{yylval.node=initNode("RP",yytext);return RP;}
+{LB} 		{yylval.node=initNode("LB",yytext);return LB;}
+{RB} 		{yylval.node=initNode("RB",yytext);return RB;}
+{LC} 		{yylval.node=initNode("LC",yytext);return LC;}
+{RC} 		{yylval.node=initNode("RC",yytext);return RC;}
+{STRUCT} 	{yylval.node=initNode("STRUCT",yytext);return STRUCT;}
+{RETURN} 	{yylval.node=initNode("RETURN",yytext);return RETURN;}
+{IF} 		{yylval.node=initNode("IF",yytext);return IF;}
+{ELSE} 		{yylval.node=initNode("ELSE",yytext);return ELSE;}
+{WHILE} 	{yylval.node=initNode("WHILE",yytext);return WHILE;}
+{ID}		{yylval.node=initNode("ID",yytext);return ID;}
+.               {errorCount++;printf("Error type A at line %d: Mysterious character '%s'\n",yylineno,yytext);}
 
 %%
 

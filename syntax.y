@@ -2,7 +2,6 @@
 	#include"node.h"
 	#include"lex.yy.c"
 	Node* root;
-	char errorStr[200];
 %}
 
 %union {
@@ -32,7 +31,7 @@
 
 %%
 
-/*--------------------High-level Definitions--------------------*/
+
 Program : ExtDefList {$$=initNode("Program","");addChild($$,$1);root=$$;}
 	;
 ExtDefList : ExtDef ExtDefList {$$=initNode("ExtDefList","");addChild($$,$2);addChild($$,$1);}
@@ -47,7 +46,7 @@ ExtDecList : VarDec {$$=initNode("ExtDecList","");addChild($$,$1);}
 	| VarDec COMMA ExtDecList {$$=initNode("ExtDecList","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	;
 
-/*--------------------Specifiers--------------------*/
+
 Specifier : TYPE {$$=initNode("Specifier","");addChild($$,$1);}
 	| StructSpecifier {$$=initNode("Specifier","");addChild($$,$1);}
 	;
@@ -60,10 +59,10 @@ OptTag : ID {$$=initNode("OptTag","");addChild($$,$1);}
 Tag : ID {$$=initNode("Tag","");addChild($$,$1);}
 	;
 
-/*--------------------Declarators--------------------*/
+
 VarDec : ID {$$=initNode("VarDec","");addChild($$,$1);}
 	| VarDec LB INT RB {$$=initNode("VarDec","");addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
-	| VarDec LB error SEMI {myerror("Missing \"]\"");errorCount++;}
+	| VarDec LB error SEMI {errorCount++;}
 	;
 FunDec : ID LP VarList RP {$$=initNode("FunDec","");addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| ID LP RP {$$=initNode("FunDec","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
@@ -75,7 +74,7 @@ VarList : ParamDec COMMA VarList {$$=initNode("VarList","");addChild($$,$3);addC
 ParamDec : Specifier VarDec {$$=initNode("ParamDec","");addChild($$,$2);addChild($$,$1);}
 	;
 
-/*--------------------Statements--------------------*/
+
 CompSt : LC DefList StmtList RC {$$=initNode("CompSt","");addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| LC DefList error RC {errorCount++;}
 	;
@@ -87,16 +86,16 @@ Stmt : Exp SEMI {$$=initNode("Stmt","");addChild($$,$2);addChild($$,$1);}
 	| RETURN Exp SEMI {$$=initNode("Stmt","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| IF LP Exp RP Stmt %prec LOWER_THAN_ELSE /*提高移入ELSE的优先级*/ {$$=initNode("Stmt","");addChild($$,$5);addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| IF LP Exp RP Stmt ELSE Stmt {$$=initNode("Stmt","");addChild($$,$7);addChild($$,$6);addChild($$,$5);addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
-	| IF LP Exp RP error ELSE Stmt {myerror("Missing \";\"");errorCount++;}
+	| IF LP Exp RP error ELSE Stmt {errorCount++;}
 	| WHILE LP Exp RP Stmt {$$=initNode("Stmt","");addChild($$,$5);addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
-	| Exp LB error SEMI {myerror("Missing \"]\"");errorCount++;}
-	| IF LP error SEMI {myerror("Missing \")\"");errorCount++;}
-	| LP Exp error SEMI {myerror("Missing \")\"");errorCount++;}
-	| ID LP error SEMI {myerror("Missing \")\"");errorCount++;}
+	| Exp LB error SEMI {errorCount++;}
+	| IF LP error SEMI {errorCount++;}
+	| LP Exp error SEMI {errorCount++;}
+	| ID LP error SEMI {errorCount++;}
 	| error SEMI {errorCount++;}
 	;
 
-/*--------------------Local Definitions--------------------*/
+
 DefList : Def DefList {$$=initNode("DefList","");addChild($$,$2);addChild($$,$1);}
 	|  /*empty*/ {$$=NULL;}
 	;
@@ -110,7 +109,7 @@ Dec : VarDec {$$=initNode("Dec","");addChild($$,$1);}
 	| VarDec ASSIGNOP Exp {$$=initNode("Dec","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	;
 
-/*--------------------Expressions--------------------*/
+
 Exp : Exp ASSIGNOP Exp {$$=initNode("Exp","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| Exp AND Exp {$$=initNode("Exp","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| Exp OR Exp {$$=initNode("Exp","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
@@ -135,3 +134,6 @@ Args : Exp COMMA Args {$$=initNode("Args","");addChild($$,$3);addChild($$,$2);ad
 	;
 
 %%
+int yyerror(char* msg){
+		fprintf(stderr,"Error type B at line %d: %s.  (unexpected near '%s')\n", yylineno, msg, yylval.node->value);
+}
