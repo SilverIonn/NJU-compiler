@@ -41,7 +41,7 @@ ExtDefList : ExtDef ExtDefList {$$=initNode("ExtDefList","");addChild($$,$2);add
 ExtDef : Specifier ExtDecList SEMI {$$=initNode("ExtDef","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}	
 	| Specifier SEMI {$$=initNode("ExtDef","");addChild($$,$2);addChild($$,$1);}
 	| Specifier FunDec CompSt {$$=initNode("ExtDef","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
-	| error SEMI {errorCount++;}
+	| Specifier error SEMI {errorCount++;}
 	;
 ExtDecList : VarDec {$$=initNode("ExtDecList","");addChild($$,$1);}
 	| VarDec COMMA ExtDecList {$$=initNode("ExtDecList","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
@@ -66,7 +66,8 @@ VarDec : ID {$$=initNode("VarDec","");addChild($$,$1);}
 	;
 FunDec : ID LP VarList RP {$$=initNode("FunDec","");addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| ID LP RP {$$=initNode("FunDec","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
-	| error RP {errorCount++;}
+	| ID error RP {errorCount++;}
+	| ID LP error RP {errorCount++;}
 	;
 VarList : ParamDec COMMA VarList {$$=initNode("VarList","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| ParamDec {$$=initNode("VarList","");addChild($$,$1);}
@@ -76,7 +77,7 @@ ParamDec : Specifier VarDec {$$=initNode("ParamDec","");addChild($$,$2);addChild
 
 
 CompSt : LC DefList StmtList RC {$$=initNode("CompSt","");addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
-	| error RC {errorCount++;}
+	| LC DefList error RC {errorCount++;}
 	;
 StmtList : Stmt StmtList {$$=initNode("StmtList","");addChild($$,$2);addChild($$,$1);}
 	|  /*empty*/ {$$=NULL;}	

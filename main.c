@@ -14,7 +14,6 @@ int main(int argc, char* argv[])
 	root=NULL;
 	yylineno=1;
 	yyrestart(fp);
-	yydebug=1;
 	yyparse();
 	if(errorCount == 0){
 		printTree(root,0);
