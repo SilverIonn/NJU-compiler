@@ -2,6 +2,7 @@
 	#include"node.h"
 	#include"lex.yy.c"
 	Node* root;
+	
 %}
 
 %union {
@@ -62,7 +63,6 @@ Tag : ID {$$=initNode("Tag","");addChild($$,$1);}
 
 VarDec : ID {$$=initNode("VarDec","");addChild($$,$1);}
 	| VarDec LB INT RB {$$=initNode("VarDec","");addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
-	| VarDec LB error SEMI {errorCount++;}
 	;
 FunDec : ID LP VarList RP {$$=initNode("FunDec","");addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| ID LP RP {$$=initNode("FunDec","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
@@ -76,7 +76,7 @@ ParamDec : Specifier VarDec {$$=initNode("ParamDec","");addChild($$,$2);addChild
 
 
 CompSt : LC DefList StmtList RC {$$=initNode("CompSt","");addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
-	| LC DefList error RC {errorCount++;}
+	| error RC {errorCount++;}
 	;
 StmtList : Stmt StmtList {$$=initNode("StmtList","");addChild($$,$2);addChild($$,$1);}
 	|  /*empty*/ {$$=NULL;}	
@@ -88,10 +88,8 @@ Stmt : Exp SEMI {$$=initNode("Stmt","");addChild($$,$2);addChild($$,$1);}
 	| IF LP Exp RP Stmt ELSE Stmt {$$=initNode("Stmt","");addChild($$,$7);addChild($$,$6);addChild($$,$5);addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| IF LP Exp RP error ELSE Stmt {errorCount++;}
 	| WHILE LP Exp RP Stmt {$$=initNode("Stmt","");addChild($$,$5);addChild($$,$4);addChild($$,$3);addChild($$,$2);addChild($$,$1);}
-	| Exp LB error SEMI {errorCount++;}
 	| IF LP error SEMI {errorCount++;}
-	| LP Exp error SEMI {errorCount++;}
-	| ID LP error SEMI {errorCount++;}
+	| WHILE LP error RP Stmt {errorCount++;}
 	| error SEMI {errorCount++;}
 	;
 
@@ -128,6 +126,8 @@ Exp : Exp ASSIGNOP Exp {$$=initNode("Exp","");addChild($$,$3);addChild($$,$2);ad
 	| ID {$$=initNode("Exp","");addChild($$,$1);}
 	| INT {$$=initNode("Exp","");addChild($$,$1);}
 	| FLOAT {$$=initNode("Exp","");addChild($$,$1);}
+	| LP error RP {errorCount++;}
+	| Exp LB error RB {errorCount++;}
 	;
 Args : Exp COMMA Args {$$=initNode("Args","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| Exp {$$=initNode("Args","");addChild($$,$1);}
@@ -135,5 +135,6 @@ Args : Exp COMMA Args {$$=initNode("Args","");addChild($$,$3);addChild($$,$2);ad
 
 %%
 int yyerror(char* msg){
+		
 		fprintf(stderr,"Error type B at line %d: %s.  (unexpected near '%s')\n", yylineno, msg, yylval.node->value);
 }
