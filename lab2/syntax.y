@@ -36,11 +36,12 @@
 Program : ExtDefList {$$=initNode("Program","");addChild($$,$1);root=$$;}
 	;
 ExtDefList : ExtDef ExtDefList {$$=initNode("ExtDefList","");addChild($$,$2);addChild($$,$1);}
-	|  /*empty*/ {$$=NULL;}
+	|  /*empty*/ {$$=initNode("ExtDefList","");}
 	;
 ExtDef : Specifier ExtDecList SEMI {$$=initNode("ExtDef","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}	
 	| Specifier SEMI {$$=initNode("ExtDef","");addChild($$,$2);addChild($$,$1);}
 	| Specifier FunDec CompSt {$$=initNode("ExtDef","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
+	| Specifier FunDec SEMI {$$=initNode("ExtDef","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| Specifier error SEMI {errorCount++;}
 	;
 ExtDecList : VarDec {$$=initNode("ExtDecList","");addChild($$,$1);}
@@ -55,7 +56,7 @@ StructSpecifier : STRUCT OptTag LC DefList RC {$$=initNode("StructSpecifier","")
 	| STRUCT Tag {$$=initNode("StructSpecifier","");addChild($$,$2);addChild($$,$1);}
 	;
 OptTag : ID {$$=initNode("OptTag","");addChild($$,$1);}
-	|  /*empty*/ {$$=NULL;}
+	|  /*empty*/ {$$=initNode("OptTag","");}
 	;
 Tag : ID {$$=initNode("Tag","");addChild($$,$1);}
 	;
@@ -80,7 +81,7 @@ CompSt : LC DefList StmtList RC {$$=initNode("CompSt","");addChild($$,$4);addChi
 	| LC DefList error RC {errorCount++;}
 	;
 StmtList : Stmt StmtList {$$=initNode("StmtList","");addChild($$,$2);addChild($$,$1);}
-	|  /*empty*/ {$$=NULL;}	
+	|  /*empty*/ {$$=initNode("StmtList","");}	
 	;
 Stmt : Exp SEMI {$$=initNode("Stmt","");addChild($$,$2);addChild($$,$1);}
 	| CompSt {$$=initNode("Stmt","");addChild($$,$1);}
@@ -96,7 +97,7 @@ Stmt : Exp SEMI {$$=initNode("Stmt","");addChild($$,$2);addChild($$,$1);}
 
 
 DefList : Def DefList {$$=initNode("DefList","");addChild($$,$2);addChild($$,$1);}
-	|  /*empty*/ {$$=NULL;}
+	|  /*empty*/ {$$=initNode("DefList","");}
 	;
 Def : Specifier DecList SEMI {$$=initNode("Def","");addChild($$,$3);addChild($$,$2);addChild($$,$1);}
 	| Specifier error SEMI {errorCount++;}
