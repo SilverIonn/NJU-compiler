@@ -7,7 +7,7 @@
 #define INTTYPE 0
 #define FLOATTYPE 1
 
-
+/*data structure of symbol table */
 typedef struct Type_* Type;
 typedef struct FieldList_* FieldList;
 typedef struct Structure_* Structure;
@@ -31,24 +31,48 @@ struct Type_
 
 struct Structure_
 {
-	char *name;
-	FieldList inList;
+	char *name;          //结构的名字
+	FieldList inList;    //结构的域
 };
 
 struct FieldList_
 {
-	char* name;	// 域的名字
-	Type type;	// 域的类型
-	FieldList tail;	// 下一个域
-	FieldList sameHash;
+	char* name;	         // 域的名字
+	Type type;	         // 域的类型
+	FieldList tail;	     // 下一个域
+	FieldList sameHash;  //”name“的哈希值相同的构成一个链表
 };
 
 struct Functype_
 {
-	char*name;
-	bool isDefined;
-	int row;
-	Type retype;
-	FieldList param;
-	Functype sameHash;
+	char*name;           //函数的名字
+	bool isDefined;      //是否已经被定义
+	int row;             //位置信息
+	Type retype;         //返回值类型
+	FieldList param;     //参数链表
+	Functype sameHash;   //”name“的哈希值相同的构成一个链表
 };
+
+/*actions on symbol table*/
+unsigned int hash_pjw(char* name);
+
+void initTable();
+int insertTable(FieldList f);
+int insertFunc(Functype f,int type);
+void insertParam(Functype f);
+FieldList findSymbol(char* name);
+Functype findFunc(char* name);
+void checkFunc();
+
+
+/*judgement */
+bool paramEqual(FieldList f1,FieldList f2);
+bool typeEqual(Type t1,Type y2);
+
+/*print function */
+void printparam(FieldList f);
+void printargs(Node *n);
+void printtype(Type t);
+void printNode(Node* n);
+
+#endif
