@@ -16,7 +16,9 @@ int main(int argc, char* argv[])
 	yyrestart(fp);
 	yyparse();
 	if(errorCount == 0){
-		printTree(root,0);
+		//printTree(root,0);
+		initTable();
+		Program(root);
 	}
 	return 0;
 }

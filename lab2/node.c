@@ -1,7 +1,7 @@
 #include "node.h"
 #include <string.h>
 #include <assert.h>
-#include <stdlib.h>
+
 #include <stdio.h>
 extern int yylineno;
 
@@ -12,15 +12,15 @@ Node* initNode(char* name, char* value){
 	strcpy(p->name, name);
 	strcpy(p->value, value);
 	p->bro = NULL;
-	p->child = NULL;
+	p->children = NULL;
 	return p;
 }
 void addChild(Node* parent,Node* child){
 //将child设为parent的子节点
 //注意：是当前存在的子节点的前面插入一个新的子节点（倒序插入）
 	if(parent != NULL && child != NULL){
-		child->bro = parent->child;
-		parent->child = child;
+		child->bro = parent->children;
+		parent->children = child;
 		parent->lineno = child->lineno;
 	}
 }
@@ -32,7 +32,7 @@ void printTree(Node* root, int n){
 	int i;
 	for(i=0; i<n; i++)
 		printf("  ");
-	if(root->child == NULL){
+	if(root->children == NULL){
 		if(strcmp(root->name,"FLOAT") == 0)
 			printf("INT: %f\n", atof(root->value));
 		else if(strcmp(root->name,"INT") == 0)
@@ -44,7 +44,7 @@ void printTree(Node* root, int n){
 	}
 	else{
 		printf("%s (%d)\n", root->name, root->lineno);
-		Node* p = root->child;
+		Node* p = root->children;
 		while(p != NULL){
 			printTree(p, n+1);
 			p = p->bro;

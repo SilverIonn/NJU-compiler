@@ -3,6 +3,7 @@
 FieldList hashTable[TABLESIZE];         
 Functype funcTable[TABLESIZE];
 
+extern Type Exp(Node *n);
 
 unsigned int hash_pjw(char* name)
 {
@@ -167,7 +168,7 @@ bool paramEqual(FieldList f1,FieldList f2)
 //比较两个类型
 bool typeEqual(Type t1,Type t2)
 {
-	if(t1->kind==0&&t2->kind==3)     
+	if((t1->kind==0&&t2->kind==3)||(t2->kind==0&&t1->kind==3))     
 	{
 		if(t1->u.basic!=t2->u.basic)
 		{
@@ -187,13 +188,10 @@ bool typeEqual(Type t1,Type t2)
 		}
 		else if(t1->kind==2)	//struct
 		{
-			//if a struct do not has  a name 
-			if(t1->u.structure->name==NULL||t2->u.structure->name==NULL)
-			{
-				return paramEqual(t1->u.structure->inList,t2->u.structure->inList);								
-			}
-			if(strcmp(t1->u.structure->name,t2->u.structure->name)!=0)
-				return false;
+			
+			
+			return paramEqual(t1->u.structure->inList,t2->u.structure->inList);								
+			
 		}
 		else if(t1->kind==1)        //array
 		{
@@ -216,12 +214,13 @@ void printparam(FieldList f)
 void printargs(Node *n)
 {
 	Node *child=n->children;
+   
 	Type t=Exp(child);
 	if(t==NULL)return;
 	printtype(t);
-	child=child->next;
+	child=child->bro;
 	if(child==NULL)return;
-	child=child->next;
+	child=child->bro;
 	printargs(child);
 }
 
@@ -249,6 +248,6 @@ void printNode(Node *n)
 	while(child!=NULL)
 	{
 		printNode(child);
-		child=child->next;
+		child=child->bro;
 	}
 }

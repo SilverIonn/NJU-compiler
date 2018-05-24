@@ -1,7 +1,8 @@
 #ifndef _SYMBOLTABLE_H__
 #define _SYMBOLTABLE_H__
 
-#include"node.h"
+#include "node.h"
+#include "assert.h"
 
 #define TABLESIZE 32768
 #define INTTYPE 0

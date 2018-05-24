@@ -1,6 +1,7 @@
 %{
 	#include"node.h"
 	#include"lex.yy.c"
+	#include "semantic.h"
 	Node* root;
 	
 %}
