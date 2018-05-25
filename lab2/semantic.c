@@ -2,14 +2,12 @@
 
 void Program(Node *n)
 {
-	//printName(n->name);
 	ExtDefList(n->children);
 	checkFunc();
 }
 
 void ExtDefList(Node *n)
 {
-	//printName(n->name);
 	Node *child=n->children;
 	if(child!=NULL)
 	{
@@ -19,9 +17,8 @@ void ExtDefList(Node *n)
 }
 
 
-/*definition of variables*/
+
 void ExtDef(Node *n){	
-	//printName(n->name);
 	Node*child=n->children;
 	Type type;
 	type=Specifier(child);	
@@ -34,7 +31,7 @@ void ExtDef(Node *n){
 	}
 	else
 	{
-		Functype f=FunDec(child,type);	//form param	
+		Functype f=FunDec(child,type);		
 
 		child=child->bro;
 		int i=0;
@@ -58,7 +55,7 @@ void ExtDef(Node *n){
 					printf("Error type 19 at line %d: Inconsistent declaration of function '%s'\n",f->row,f->name);
 
 			}
-			CompSt(child,type);		//give return type	
+			CompSt(child,type);			
 		}
 
 	}
@@ -67,7 +64,6 @@ void ExtDef(Node *n){
 
 void ExtDecList(Node *n,Type type)
 {
-	//printName(n->name);
 	Node*child=n->children;
 	VarDec(child,type,1);
 	child=child->bro;
@@ -81,10 +77,9 @@ void ExtDecList(Node *n,Type type)
 /*Specifiers*/
 Type Specifier(Node* n)
 {
-	//printName(n->name);
 	Node *child=n->children;
 	Type type;
-	if(strcmp(child->name,"TYPE")==0)		//basic type
+	if(strcmp(child->name,"TYPE")==0)		
 	{
 		type=malloc(sizeof(struct Type_));
 		type->kind=0;
@@ -104,15 +99,14 @@ Type Specifier(Node* n)
 	return type;
 }
 
-//struct type
+
 Type StructSpecifier(Node *n)
 {
-	//printName(n->name);
 	Node *child=n->children;
 	Type type=malloc(sizeof(struct Type_));
 	type->kind=2;
 	type->u.structure=malloc(sizeof(struct Structure_));
-	type->u.structure->inList=NULL;
+	type->u.structure->strfield=NULL;
 	FieldList f=malloc(sizeof(struct FieldList_));
 	f->type=type;
 	while(child!=NULL)
@@ -133,19 +127,19 @@ Type StructSpecifier(Node *n)
 		else if(strcmp(child->name,"Tag")==0)
 		{
 			FieldList structf=findSymbol(child->children->value);
-			//printf("%s\n",child->children->value);
+		
 			if(structf==NULL||structf->type->kind!=2||strcmp(structf->name,structf->type->u.structure->name)!=0)
 			{
-				printf("Error type 17 at line %d: Undefined struct ‘%s’\n",child->lineno,child->children->value);
+				printf("Error type 17 at line %d: Undefined structure ‘%s’\n",child->lineno,child->children->value);
 				return NULL;
 			}
 			return structf->type;
 		}
 		else if(strcmp(child->name,"DefList")==0)
 		{
-			type->u.structure->inList=DefList(child,2);	//struct field 
-			//from=2,other=1
-			if(f->type->u.structure->name==NULL)return type;	//s struct without name
+			type->u.structure->strfield=DefList(child,2);	 
+			
+			if(f->type->u.structure->name==NULL)return type;	
 			int i=insertTable(f);
 			if(i==1)
 			{
@@ -159,10 +153,9 @@ Type StructSpecifier(Node *n)
 }
 
 /*Declarators*/
-FieldList VarDec(Node *n,Type type,int from)		//error type 3
-	//redefined variable
+FieldList VarDec(Node *n,Type type,int from)		
 {
-	//printName(n->name);
+	
 	Node *child=n->children;
 	FieldList f;
 	if(strcmp(child->name,"ID")==0)
@@ -172,10 +165,10 @@ FieldList VarDec(Node *n,Type type,int from)		//error type 3
 		strcpy(f->name,child->value);
 		f->type=type;
 		f->tail=NULL;
-		f->sameHash=NULL;
+		f->hashEqual=NULL;
 		if(from==3)return f;	//do not insert this  param now
 		int i=insertTable(f);		//insert this ID
-		//if redefined
+		
 		if(i==1)
 		{
 			if(from==1)
@@ -187,7 +180,7 @@ FieldList VarDec(Node *n,Type type,int from)		//error type 3
 		return f;
 	}
 	else
-	{							//construct arry 
+	{							 
 		f=VarDec(child,type,from);
 		if(f==NULL)return NULL;
 		Type temp=f->type;
@@ -207,22 +200,21 @@ FieldList VarDec(Node *n,Type type,int from)		//error type 3
 			temp=temp->u.array.elem;
 		}
 		temp->u.array.elem=t;
-		//printtype(f->type);
+		
 		return f;
 	}
 }
 
 Functype FunDec(Node* n,Type type)
 {
-	//printName(n->name);
 	Node* child=n->children;
 	Functype f=malloc(sizeof(struct Functype_));
 	f->name=malloc(sizeof(child->value));
 	strcpy(f->name,child->value);
 	f->isDefined=0;
 	f->row=child->lineno;
-	f->retype=type;
-	f->sameHash=NULL;
+	f->ret_type=type;
+	f->hashEqual=NULL;
 	f->param=NULL;
 	child=child->bro;
 	child=child->bro;
@@ -235,7 +227,6 @@ Functype FunDec(Node* n,Type type)
 
 FieldList VarList(Node *n)
 {
-	//printName(n->name);
 	Node* child=n->children;
 	FieldList f;
 	f=ParamDec(child);
@@ -255,7 +246,6 @@ FieldList VarList(Node *n)
 
 FieldList ParamDec(Node*n)
 {
-	//printf("ParamDec\n");
 	Node *child=n->children;
 	FieldList f;
 	Type type;
@@ -265,31 +255,30 @@ FieldList ParamDec(Node*n)
 }
 
 /*Statements*/
-void CompSt(Node * n,Type retype)
+void CompSt(Node * n,Type ret_type)
 {
-	//printf("CompSt\n");
+	
 	Node *child=n->children;
 	child=child->bro;
 	DefList(child,1);
 	child=child->bro;
-	StmtList(child,retype);
+	StmtList(child,ret_type);
 }
 
-void StmtList(Node *n,Type retype)
+void StmtList(Node *n,Type ret_type)
 {
-	//printf("StmtList\n");
+	
 	Node *child=n->children;
 	if(child==NULL)return;
-	Stmt(child,retype);
+	Stmt(child,ret_type);
 	child=child->bro;
-	StmtList(child,retype);
+	StmtList(child,ret_type);
 }
 
-void Stmt(Node *n,Type retype)		//error type 8	return 
-	//return type mismatched
+void Stmt(Node *n,Type ret_type)		
+	
 {
-	//printName(n->name);
-	//TODO:more details
+	
 	Node*child=n->children;
 	while(child!=NULL)
 	{
@@ -297,10 +286,10 @@ void Stmt(Node *n,Type retype)		//error type 8	return
 		{
 			child=child->bro;
 			Type t=Exp(child);
-			if(retype==NULL||t==NULL)return;
-			if(!typeEqual(retype,t))
+			if(ret_type==NULL||t==NULL)return;
+			if(!typeEqual(ret_type,t))
 			{
-				printf("Error type 8 at line %d: The return type mismatched\n",child->lineno);
+				printf("Error type 8 at line %d: Type mismatched for return\n",child->lineno);
 			}
 			return;
 		}
@@ -319,7 +308,7 @@ void Stmt(Node *n,Type retype)		//error type 8	return
 		}
 		else if(strcmp(child->name,"Stmt")==0)
 		{
-			Stmt(child,retype);
+			Stmt(child,ret_type);
 		}
 		child=child->bro;
 	}
@@ -327,7 +316,7 @@ void Stmt(Node *n,Type retype)		//error type 8	return
 
 /*Local Definitions*/
 FieldList DefList(Node* n,int from)
-{//printName(n->name);
+{
 	if(n->children==NULL)return NULL;
 	FieldList f;
 	Node *child=n->children;
@@ -346,17 +335,17 @@ FieldList DefList(Node* n,int from)
 }
 
 FieldList Def(Node *n,int from)
-{//printName(n->name);
+{
 	Node* child=n->children;
-	FieldList f;	//=malloc(sizeof(struct FieldList_));
+	FieldList f;	
 	Type type=Specifier(child);
 	child=child->bro;
-	f=DecList(child,type,from);	//inhre
+	f=DecList(child,type,from);	
 	return f;
 }
 
 FieldList DecList(Node *n,Type type,int from)
-{//printName(n->name);
+{
 	Node *child=n->children;
 	FieldList f;
 	f=Dec(child,type,from);
@@ -375,14 +364,13 @@ FieldList DecList(Node *n,Type type,int from)
 	return f;
 }
 
-FieldList Dec(Node *n,Type type,int from)	//error type 5
-	//type mismatched
-{//printName(n->name);
+FieldList Dec(Node *n,Type type,int from)	
+{
 	Node *child=n->children;
 	FieldList f;
 	f=VarDec(child,type,from);
 	child=child->bro;
-	if(child!=NULL){		//assignop =
+	if(child!=NULL){		
 		if(from==2){	//struct cannot be initialized
 			printf("Error type 15 at line %d: be initialized field ‘%s’\n",child->lineno,f->name);
 			return f;
@@ -391,7 +379,7 @@ FieldList Dec(Node *n,Type type,int from)	//error type 5
 		Type t=Exp(child);
 		if(t!=NULL&&type!=NULL&&!typeEqual(type,t))
 		{
-			printf("Error type 5 at line %d: The type mismatched\n",child->lineno);
+			printf("Error type 5 at line %d: Type mismatched for assignment\n",child->lineno);
 		}
 	}
 	return f;
@@ -399,19 +387,19 @@ FieldList Dec(Node *n,Type type,int from)	//error type 5
 
 /*Expressions*/
 Type Exp(Node *n)
-{//printName(n->name);
+{
 	Node *child=n->children;
 	Type type;
 	if(strcmp(child->name,"Exp")==0)
 	{	
 		Node *child2=child->bro;
-		//=
+		
 		if(strcmp(child2->name,"ASSIGNOP")==0)			
 		{
 			//left value
 			Node *leftChild=child->children;
 			Type leftType=NULL;
-			//because of associative property and priority,it is right
+			
 			if(strcmp(leftChild->name,"ID")==0&&leftChild->bro==NULL)
 				leftType=Exp(child);
 			else if(strcmp(leftChild->name,"Exp")==0&&leftChild->bro!=NULL&&strcmp(leftChild->bro->name,"LB")==0)	//array
@@ -429,7 +417,7 @@ Type Exp(Node *n)
 			if(typeEqual(leftType,rightType))return leftType;
 			else
 			{
-				printf("Error type 5 at line %d: Type mismatched\n",child->lineno);
+				printf("Error type 5 at line %d: Type mismatched for assignment\n",child->lineno);
 				return NULL;
 			}
 		}
@@ -442,34 +430,33 @@ Type Exp(Node *n)
 			else if((t->kind==0||t->kind==3)&&(t2->kind==0||t2->kind==3)&&t->u.basic==t2->u.basic)return t;
 			else
 			{
-				printf("Error type 7 at line %d: Operands type mismatched\n",child->lineno);
+				printf("Error type 7 at line %d: Type mismatched for operands\n",child->lineno);
 				return NULL;
 			}
 		}
 		else if(strcmp(child2->name,"LB")==0)	//array
 		{
 			Type t1=Exp(child);
-			//child's children must be a ID,
+			
 			if(t1==NULL)return NULL;
 			if(t1->kind!=1)
 			{
 				printf("Error type 10 at line %d: '",child->lineno);
 				printNode(child);
-				printf("' must be an array\n");
+				printf("' is not an array\n");
 				return NULL;
 			}
 			child2=child2->bro;
 			Type t2=Exp(child2);
-			//printf("array back\n");
 			if(t2==NULL)return NULL;
 			if(!((t2->kind==0||t2->kind==3)&&t2->u.basic==INTTYPE))
 			{
-				printf("Error type 12 at line %d: Operands type mistaken\n",child2->lineno);
+				printf("Error type 12 at line %d: '%s' is not an integer\n",child2->lineno,child2->children->value);
 				return NULL;
 			}
 			return t1->u.array.elem;
 		}
-		else if(strcmp(child2->name,"DOT")==0)	//struct
+		else if(strcmp(child2->name,"DOT")==0)	
 		{
 			Type t1=Exp(child);
 			if(t1==NULL)return NULL;
@@ -478,7 +465,7 @@ Type Exp(Node *n)
 				printf("Error type 13 at line %d: Illegal use of '.'\n",child->lineno);
 				return NULL;
 			}
-			FieldList fl=t1->u.structure->inList;
+			FieldList fl=t1->u.structure->strfield;
 			child2=child2->bro;
 			while(fl!=NULL)
 			{
@@ -486,45 +473,45 @@ Type Exp(Node *n)
 					return fl->type;
 				fl=fl->tail;
 			}
-			printf("Error type 14 at line %d: Un-existed field '%s‘\n",child2->lineno,child2->value);
+			printf("Error type 14 at line %d: Non-existent field '%s‘\n",child2->lineno,child2->value);
 			return NULL;
 		}
 
 	}
-	else if(strcmp(child->name,"LP")==0)	//() 
+	else if(strcmp(child->name,"LP")==0)	
 	{
 		child=child->bro;
 		return Exp(child);
 	}
-	else if(strcmp(child->name,"MINUS")==0)	//-
+	else if(strcmp(child->name,"MINUS")==0)	
 	{
 		child=child->bro;
 		Type t=Exp(child);
 		if(t==NULL)return NULL;
 		if(t->kind!=0)
 		{
-			printf("Error type 7 at line %d: Operands type mismatched\n",child->lineno);
+			printf("Error type 7 at line %d: Type mismatched for operands\n",child->lineno);
 			return NULL;
 		}
 		return t;
 	}
-	else if(strcmp(child->name,"NOT")==0)	//not
+	else if(strcmp(child->name,"NOT")==0)	
 	{
 		child=child->bro;
 		Type t=Exp(child);
 		if(t==NULL)return NULL;
 		if(t->kind==0&&t->u.basic==INTTYPE)return t;
-		printf("Error type 7 at line %d: Operands type mismatched\n",child->lineno);
+		printf("Error type 7 at line %d: Type mismatched for operands\n",child->lineno);
 		return NULL;
 	}
-	else if(strcmp(child->name,"ID")==0&&child->bro!=NULL)	//func
+	else if(strcmp(child->name,"ID")==0&&child->bro!=NULL)	
 	{
 
 		FieldList f1=findSymbol(child->value);
 		Functype f=findFunc(child->value);
 		if(f1!=NULL&&f==NULL)
 		{
-			printf("Error type 11 at line %d: '%s' must be a function\n",child->lineno,child->value);
+			printf("Error type 11 at line %d: '%s' is not a function\n",child->lineno,child->value);
 			return NULL;
 		}
 		if(f==NULL||!f->isDefined){
@@ -538,7 +525,7 @@ Type Exp(Node *n)
 		{
 			if(param!=NULL)
 			{
-				printf("Error type 9 at line : The method '%s(",f->name);
+				printf("Error type 9 at line %d: The method '%s(",child->lineno,f->name);
 				printparam(param);
 				printf(")'is not applicable for the arguments '()'\n");
 			}
@@ -546,14 +533,14 @@ Type Exp(Node *n)
 		else
 		{
 			if(!Args(child,param)){
-				printf("Error type 9 at line : The method '%s(",f->name);
+				printf("Error type 9 at line %d: The method '%s(",child->lineno,f->name);
 				printparam(param);
 				printf(")'is not applicable for the arguments '(");
 				printargs(child);
 				printf(")'\n");
 			}
 		}
-		return f->retype;
+		return f->ret_type;
 	}
 	else if(strcmp(child->name,"ID")==0)
 	{
@@ -583,12 +570,12 @@ Type Exp(Node *n)
 }
 
 bool Args(Node* n,FieldList f)
-{//printName(n->name);
+{
 	if(n==NULL&&f==NULL)return true;
 	else if(n==NULL||f==NULL)return false;
 	Node *child=n->children;
 	Type t=Exp(child);
-	if(t==NULL)return true;		//don't need to report the mistake again
+	if(t==NULL)return true;		
 	if(!typeEqual(t,f->type))return false;
 	if(child->bro==NULL&&f->tail==NULL)return true;
 	else if(child->bro==NULL||f->tail==NULL)return false;

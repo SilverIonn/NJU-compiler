@@ -17,9 +17,9 @@ Functype FunDec(Node *n,Type type);
 FieldList VarList(Node *n);
 FieldList ParamDec(Node *n);
 
-void CompSt(Node *n,Type retype);
-void StmtList(Node *n,Type retype);
-void Stmt(Node *n,Type retype);
+void CompSt(Node *n,Type ret_type);
+void StmtList(Node *n,Type ret_type);
+void Stmt(Node *n,Type ret_type);
 
 FieldList DefList(Node* n,int from);
 FieldList Def(Node* n,int from);

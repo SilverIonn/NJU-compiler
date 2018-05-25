@@ -38,12 +38,12 @@ int insertTable(FieldList f)
 	{
 		FieldList q=hashTable[no];
 		if(strcmp(q->name,f->name)==0)return 1;	     //检测到发生重定义 返回值为1
-		while(q->sameHash!=NULL)
+		while(q->hashEqual!=NULL)
 		{
-			q=q->sameHash;
+			q=q->hashEqual;
 			if(strcmp(q->name,f->name)==0)return 1;	 //检测到发生重定义 返回值为1
 		}
-		q->sameHash=f;
+		q->hashEqual=f;
 	}
 	return 0;
 }
@@ -66,29 +66,29 @@ int insertFunc(Functype f,int type)		//type=0: 函数声明   type=1:函数定�
 				return 1;	              //检测到函数已经定义，返回值为1
 			else
 			{
-				if(!typeEqual(q->retype,f->retype)||!paramEqual(q->param,f->param))
+				if(!typeEqual(q->ret_type,f->ret_type)||!paramEqual(q->param,f->param))
 					return 2;	          //检测到函数声明不一致，返回值为2
 				q->isDefined=type;
 				return 0;
 			}
 		}
-		while(q->sameHash!=NULL)
+		while(q->hashEqual!=NULL)
 		{
-			q=q->sameHash;
+			q=q->hashEqual;
 			if(strcmp(q->name,f->name)==0)
 			{
 				if(q->isDefined)
 					return 1;	          //检测到函数已经定义，返回值为1
 				else
 				{
-					if(!typeEqual(q->retype,f->retype)||!paramEqual(q->param,f->param))
+					if(!typeEqual(q->ret_type,f->ret_type)||!paramEqual(q->param,f->param))
 						return 2;	      //检测到函数声明不一致，返回值为2
 					q->isDefined=type;
 					return 0;
 				}
 			}
 		}
-		q->sameHash=f;
+		q->hashEqual=f;
 		insertParam(f);
 	}
 	return 0;
@@ -118,7 +118,7 @@ FieldList findSymbol(char *name){
 	FieldList p=hashTable[no];
 	while(p!=NULL){
 		if(strcmp(p->name,name)==0)return p;
-		p=p->sameHash;
+		p=p->hashEqual;
 	}
 	return NULL;
 }
@@ -130,7 +130,7 @@ Functype findFunc(char *name)
 	Functype p=funcTable[no];
 	while(p!=NULL){
 		if(strcmp(p->name,name)==0)return p;
-		p=p->sameHash;
+		p=p->hashEqual;
 	}
 	return NULL;
 }
@@ -147,7 +147,7 @@ void checkFunc()
 			{
 				if(!p->isDefined)
 					printf("Error type 18 at line %d: Undefined function '%s'\n",p->row,p->name);
-				p=p->sameHash;
+				p=p->hashEqual;
 			}
 		}
 	}
@@ -181,7 +181,7 @@ bool typeEqual(Type t1,Type t2)
 	}
 	else
 	{
-		if(t1->kind==0)	        //basic
+		if(t1->kind==0||t1->kind==3)	        //basic or constant
 		{
 			if(t1->u.basic!=t2->u.basic)
 				return false;
@@ -190,7 +190,7 @@ bool typeEqual(Type t1,Type t2)
 		{
 			
 			
-			return paramEqual(t1->u.structure->inList,t2->u.structure->inList);								
+			return paramEqual(t1->u.structure->strfield,t2->u.structure->strfield);								
 			
 		}
 		else if(t1->kind==1)        //array

@@ -33,7 +33,7 @@ struct Type_
 struct Structure_
 {
 	char *name;          //结构的名字
-	FieldList inList;    //结构的域
+	FieldList strfield;    //结构的域
 };
 
 struct FieldList_
@@ -41,7 +41,7 @@ struct FieldList_
 	char* name;	         // 域的名字
 	Type type;	         // 域的类型
 	FieldList tail;	     // 下一个域
-	FieldList sameHash;  //”name“的哈希值相同的构成一个链表
+	FieldList hashEqual;  //”name“的哈希值相同的构成一个链表
 };
 
 struct Functype_
@@ -49,9 +49,9 @@ struct Functype_
 	char*name;           //函数的名字
 	bool isDefined;      //是否已经被定义
 	int row;             //位置信息
-	Type retype;         //返回值类型
+	Type ret_type;         //返回值类型
 	FieldList param;     //参数链表
-	Functype sameHash;   //”name“的哈希值相同的构成一个链表
+	Functype hashEqual;   //”name“的哈希值相同的构成一个链表
 };
 
 /*actions on symbol table*/
