@@ -1,6 +1,6 @@
 #include "symboltable.h"
 
-FieldList hashTable[TABLESIZE];         
+FieldList varTable[TABLESIZE];         
 Functype funcTable[TABLESIZE];
 
 extern Type Exp(Node *n);
@@ -21,7 +21,7 @@ void initTable()
 	int i;
 	for(i=0;i<TABLESIZE;i++)
 	{
-		hashTable[i]=NULL;
+		varTable[i]=NULL;
 		funcTable[i]=NULL;
 	}
 }
@@ -30,13 +30,13 @@ int insertTable(FieldList f)
 {
 	if(f->name==NULL)return 0;	
 	unsigned int no= hash_pjw(f->name);
-	if(hashTable[no]==NULL)
+	if(varTable[no]==NULL)
 	{
-		hashTable[no]=f;
+		varTable[no]=f;
 	}
 	else 
 	{
-		FieldList q=hashTable[no];
+		FieldList q=varTable[no];
 		if(strcmp(q->name,f->name)==0)return 1;	     //检测到发生重定义 返回值为1
 		while(q->hashEqual!=NULL)
 		{
@@ -114,8 +114,8 @@ void insertParam(Functype f)
 
 FieldList findSymbol(char *name){	          
 	unsigned int no=hash_pjw(name);
-	if(hashTable[no]==NULL)return NULL;
-	FieldList p=hashTable[no];
+	if(varTable[no]==NULL)return NULL;
+	FieldList p=varTable[no];
 	while(p!=NULL){
 		if(strcmp(p->name,name)==0)return p;
 		p=p->hashEqual;

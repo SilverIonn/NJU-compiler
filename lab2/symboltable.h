@@ -63,7 +63,7 @@ int insertFunc(Functype f,int type);
 void insertParam(Functype f);
 FieldList findSymbol(char* name);
 Functype findFunc(char* name);
-void checkFunc();
+void checkFunc();    //最后检验是否有未定义的函数
 
 
 /*judgement */

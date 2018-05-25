@@ -153,7 +153,7 @@ Type StructSpecifier(Node *n)
 }
 
 /*Declarators*/
-FieldList VarDec(Node *n,Type type,int from)		
+FieldList VarDec(Node *n,Type type,int from)		//from=3 func; from=2 struct; from=1 other
 {
 	
 	Node *child=n->children;
