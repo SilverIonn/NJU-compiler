@@ -4,21 +4,29 @@
 
 int main(int argc, char* argv[])
 {
- 	if (argc <= 1) return 1;
-	FILE* fp = fopen(argv[1],"r");
-	if (!fp)
+ 	if (argc <= 1) return -1;
+	FILE* f = fopen(argv[1],"r");
+	if (!f)
 	{
 		perror(argv[1]);
 		return 1;
 	}	
 	root=NULL;
 	yylineno=1;
-	yyrestart(fp);
+	yyrestart(f);
 	yyparse();
-	if(errorCount == 0){
-		//printTree(root,0);
+	if(errorCount==0){
+		//printTree(root,0);	
 		initTable();
 		Program(root);
+		//optimize inter code
+		optIF();	//label
+		rmLabel();
+		lookCon();		//temp
+		rddCode();		//variable
+		sameRight();
+		if(argc<=2)	return 1;
+		printCode(argv[2]);
 	}
 	return 0;
 }

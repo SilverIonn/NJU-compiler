@@ -3,7 +3,7 @@
 FieldList varTable[TABLESIZE];         
 Functype funcTable[TABLESIZE];
 
-extern Type Exp(Node *n);
+extern Type Exp(Node *n,Operand place);
 
 unsigned int hash_pjw(char* name)
 {
@@ -290,7 +290,7 @@ int typeSize(Type type)
 	else if(type->kind==2)	//struct
 	{
 		int size=0;
-		FieldList f=type->u.structure->inList;
+		FieldList f=type->u.structure->strfield;
 		while(f!=NULL)
 		{
 			size+=typeSize(f->type);
@@ -303,7 +303,7 @@ int typeSize(Type type)
 		//高维数组
 		if(type->u.array.elem->kind==1)
 		{
-			printf("Can not translate the code: Contain multidimensional array and function parameters of array type!\n");
+			printf("Cannot translate: Code contains variables of multi-dimensional array type or parameters of array type.\n");
 			exit(-1);
 		}
 		return	type->u.array.size*typeSize(type->u.array.elem); 
