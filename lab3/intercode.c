@@ -57,7 +57,7 @@ void deleteCode(InterCode c)
 }
 
 //print code in file
-void printCode(char* fname)
+void fwriteAllCode(char* fname)
 {
 	FILE *fp=fopen(fname,"w");
 	if(fp==NULL)
@@ -71,94 +71,94 @@ void printCode(char* fname)
 		switch(c->kind)
 		{
 			case ASSIGN_K:
-				printOp(c->u.assign.left,fp);
+				fwriteOp(c->u.assign.left,fp);
 				fputs(":=	",fp);
-				printOp(c->u.assign.right,fp);
+				fwriteOp(c->u.assign.right,fp);
 				break;
 			case ADD_K:
-				printOp(c->u.binop.result,fp);
+				fwriteOp(c->u.binop.result,fp);
 				fputs(":=	",fp);
-				printOp(c->u.binop.op1,fp);
+				fwriteOp(c->u.binop.op1,fp);
 				fputs("+	",fp);
-				printOp(c->u.binop.op2,fp);
+				fwriteOp(c->u.binop.op2,fp);
 				break;
 			case SUB_K:
-				printOp(c->u.binop.result,fp);
+				fwriteOp(c->u.binop.result,fp);
 				fputs(":=	",fp);
-				printOp(c->u.binop.op1,fp);
+				fwriteOp(c->u.binop.op1,fp);
 				fputs("-	",fp);
-				printOp(c->u.binop.op2,fp);
+				fwriteOp(c->u.binop.op2,fp);
 				break;
 			case MUL_K:
-				printOp(c->u.binop.result,fp);
+				fwriteOp(c->u.binop.result,fp);
 				fputs(":=	",fp);
-				printOp(c->u.binop.op1,fp);
+				fwriteOp(c->u.binop.op1,fp);
 				fputs("*	",fp);
-				printOp(c->u.binop.op2,fp);
+				fwriteOp(c->u.binop.op2,fp);
 				break;
 			case DIV_K:
-				printOp(c->u.binop.result,fp);
+				fwriteOp(c->u.binop.result,fp);
 				fputs(":=	",fp);
-				printOp(c->u.binop.op1,fp);
+				fwriteOp(c->u.binop.op1,fp);
 				fputs("/	",fp);
-				printOp(c->u.binop.op2,fp);
+				fwriteOp(c->u.binop.op2,fp);
 				break;
 			case RETURN_K:
 				fputs("RETURN	",fp);
-				printOp(c->u.one.op,fp);
+				fwriteOp(c->u.one.op,fp);
 				break;
 			case LABEL_K:
 				fputs("LABEL	",fp);
-				printOp(c->u.one.op,fp);
+				fwriteOp(c->u.one.op,fp);
 				fputs(":	",fp);
 				break;
 			case GOTO_K:
 				fputs("GOTO	",fp);
-				printOp(c->u.one.op,fp);
+				fwriteOp(c->u.one.op,fp);
 				break;
 			case IFGOTO_K:
 				fputs("IF	",fp);
-				printOp(c->u.triop.t1,fp);
+				fwriteOp(c->u.triop.t1,fp);
 				fputs(c->u.triop.op,fp);
 				fputs("	",fp);
-				printOp(c->u.triop.t2,fp);
+				fwriteOp(c->u.triop.t2,fp);
 				fputs("GOTO	",fp);
-				printOp(c->u.triop.label,fp);
+				fwriteOp(c->u.triop.label,fp);
 				break;
 			case READ_K:
 				fputs("READ	",fp);
-				printOp(c->u.one.op,fp);
+				fwriteOp(c->u.one.op,fp);
 				break;
 			case WRITE_K:
 				fputs("WRITE	",fp);
-				printOp(c->u.one.op,fp);
+				fwriteOp(c->u.one.op,fp);
 				break;
 			case CALL_K:
-				printOp(c->u.assign.left,fp);
+				fwriteOp(c->u.assign.left,fp);
 				fputs(":=	CALL	",fp);
-				printOp(c->u.assign.right,fp);
+				fwriteOp(c->u.assign.right,fp);
 				break;
 			case ARG_K:
 				fputs("ARG	",fp);
-				printOp(c->u.one.op,fp);
+				fwriteOp(c->u.one.op,fp);
 				break;
 			case FUNCTION_K:
 				fputs("FUNCTION	",fp);
-				printOp(c->u.one.op,fp);
+				fwriteOp(c->u.one.op,fp);
 				fputs(":",fp);
 				break;
 			case PARAM_K:
 				fputs("PARAM	",fp);
-				printOp(c->u.one.op,fp);
+				fwriteOp(c->u.one.op,fp);
 				break;
 			case RIGHTAT_K:
-				printOp(c->u.assign.left,fp);
+				fwriteOp(c->u.assign.left,fp);
 				fputs(":=	&",fp);
-				printOp(c->u.assign.right,fp);
+				fwriteOp(c->u.assign.right,fp);
 				break;
 			case DEC_K:
 				fputs("DEC	",fp);
-				printOp(c->u.dec.op,fp);
+				fwriteOp(c->u.dec.op,fp);
 				char size[32];
 				sprintf(size,"%d",c->u.dec.size);
 				fputs(size,fp);
@@ -170,7 +170,7 @@ void printCode(char* fname)
 	fclose(fp);
 }
 
-void printOp(Operand op,FILE* fp)
+void fwriteOp(Operand op,FILE* fp)
 {
 	if(op==NULL)
 	{
@@ -215,7 +215,7 @@ void printOp(Operand op,FILE* fp)
 }
 
 /*optimize code*/
-void optIF()
+void optGotoCode()
 {
 	InterCode c=code_h;
 	while(c!=NULL)
@@ -284,7 +284,7 @@ void optIF()
 }
 
 //remove useless label
-void rmLabel()
+void deleteLabel()
 {
 	Label_No head=malloc(sizeof(struct Label_No_));
 	head->no=-1;
@@ -364,7 +364,7 @@ int opEqual(Operand op1,Operand op2)
 	return 0;
 }
 
-void rddCode()
+void remove_dead_code()
 {
 	InterCode top=code_t;
 	InterCode bottom=code_t;
@@ -482,7 +482,7 @@ void rddCode()
 }
 
 //find constants and　figure them
-void lookCon()
+void figure_const()
 {
 	InterCode h=code_h;
 	while(h!=NULL)
@@ -514,7 +514,7 @@ void lookCon()
 	}
 }
 
-void sameRight()
+void same_subexp()
 {
 	InterCode h=code_h;
 	while(h!=NULL)

@@ -72,19 +72,19 @@ struct Label_No_
 /*code node functions*/
 void insertCode(InterCode c);
 void deleteCode(InterCode c);
-void printCode(char *fname);
-void printOp(Operand op,FILE *fp);
+void fwriteAllCode(char *fname);
+void fwriteOp(Operand op,FILE *fp);
 
 extern InterCode code_h,code_t;
 extern int varCount;
 extern int labCount;
 
 /*optimize code*/
-void optIF();
-void rmLabel();
+void optGotoCode();
+void deleteLabel();
 int opEqual(Operand op1,Operand op2);
-void rddCode();
-void sameRight();
-void lookCon();
+void remove_dead_code();
+void same_subexp();
+void figure_const();
 
 #endif
