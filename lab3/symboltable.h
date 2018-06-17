@@ -3,6 +3,7 @@
 
 #include "node.h"
 #include "assert.h"
+#include "intercode.h"
 
 #define TABLESIZE 32768
 #define INTTYPE 0
@@ -75,5 +76,7 @@ void printparam(FieldList f);
 void printargs(Node *n);
 void printtype(Type t);
 void printNode(Node* n);
+
+int typeSize(Type type);
 
 #endif

@@ -24,6 +24,33 @@ void initTable()
 		varTable[i]=NULL;
 		funcTable[i]=NULL;
 	}
+	//insert function read() and write();
+	Functype fr=malloc(sizeof(struct Functype_));
+	fr->name=malloc(8);
+	strcpy(fr->name,"read");
+	fr->isDefined=true;
+	fr->row=0;
+	fr->ret_type=malloc(sizeof(struct Type_));
+	fr->ret_type->kind=basic;
+	fr->ret_type->u.basic=INTTYPE;
+	fr->param=NULL;
+	fr->hashEqual=NULL;
+	insertFunc(fr,1);
+
+	Functype fw=malloc(sizeof(struct Functype_));
+	fw->name=malloc(8);
+	strcpy(fw->name,"write");
+	fw->isDefined=true;
+	fw->row=0;
+	fw->ret_type=fr->ret_type;
+	fw->param=malloc(sizeof(struct FieldList_));
+	fw->param->name=malloc(16);
+	strcpy(fw->param->name,"write_param");
+	fw->param->type=fw->ret_type;
+	fw->param->tail=NULL;
+	fw->param->hashEqual=NULL;
+	fw->hashEqual=NULL;
+	insertFunc(fw,1);
 }
 
 int insertTable(FieldList f)
@@ -215,7 +242,7 @@ void printargs(Node *n)
 {
 	Node *child=n->children;
    
-	Type t=Exp(child);
+	Type t=Exp(child,NULL);
 	if(t==NULL)return;
 	printtype(t);
 	child=child->bro;
@@ -250,4 +277,37 @@ void printNode(Node *n)
 		printNode(child);
 		child=child->bro;
 	}
+}
+
+int typeSize(Type type)
+{
+	if(type->kind==0||type->kind==3)
+	{
+		if(type->u.basic==INTTYPE)
+			return 4;
+		else return 8;
+	}
+	else if(type->kind==2)	//struct
+	{
+		int size=0;
+		FieldList f=type->u.structure->inList;
+		while(f!=NULL)
+		{
+			size+=typeSize(f->type);
+			f=f->tail;
+		}
+		return size;
+	}
+	else if(type->kind==1)		//array
+	{
+		//高维数组
+		if(type->u.array.elem->kind==1)
+		{
+			printf("Can not translate the code: Contain multidimensional array and function parameters of array type!\n");
+			exit(-1);
+		}
+		return	type->u.array.size*typeSize(type->u.array.elem); 
+	}
+	printf("type size error!\n");
+	return 0;
 }

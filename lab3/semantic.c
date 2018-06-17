@@ -53,7 +53,28 @@ void ExtDef(Node *n){
 					printf("Error type 4 at line %d: Redefined function '%s'\n",f->row,f->name);
 				else if(i==2)
 					printf("Error type 19 at line %d: Inconsistent declaration of function '%s'\n",f->row,f->name);
-
+				else
+				{
+					Operand funcop=malloc(sizeof(struct Operand_));
+					funcop->kind=FUNCTION;
+					funcop->u.value=f->name;
+					InterCode code=malloc(sizeof(struct InterCode_));
+					code->kind=FUNCTION_K;
+					code->u.one.op=funcop;
+					insertCode(code);		//funtion  :
+					FieldList param=f->param;
+					while(param!=NULL)
+					{
+						Operand pop=malloc(sizeof(struct Operand_));	//king of pop--MJ
+						pop->kind=VARIABLE;
+						pop->u.value=param->name;
+						InterCode pcode=malloc(sizeof(struct InterCode_));
+						pcode->kind=PARAM_K;
+						pcode->u.one.op=pop;
+						insertCode(pcode);
+						param=param->tail;
+					}
+				}
 			}
 			CompSt(child,type);			
 		}
@@ -65,7 +86,32 @@ void ExtDef(Node *n){
 void ExtDecList(Node *n,Type type)
 {
 	Node*child=n->children;
-	VarDec(child,type,1);
+	FieldList f=VarDec(child,type,1);	//1:global variable
+	if(f!=NULL)
+	{
+		if(f->type->kind==1)			//array
+		{
+			Operand op=malloc(sizeof(struct Operand_));
+			op->kind=TEMPVAR;
+			op->u.var_no=varCount++;
+
+			InterCode deccode=malloc(sizeof(struct InterCode_));
+			deccode->kind=DEC_K;
+			deccode->u.dec.op=op;
+			deccode->u.dec.size=typeSize(f->type);
+			insertCode(deccode);
+
+			Operand v=malloc(sizeof(struct Operand_));
+			v->kind=VARIABLE;
+			v->u.value=f->name;
+
+			InterCode addrcode=malloc(sizeof(struct InterCode_));
+			addrcode->kind=RIGHTAT_K;
+			addrcode->u.assign.left=v;
+			addrcode->u.assign.right=op;
+			insertCode(addrcode);
+		}
+	}
 	child=child->bro;
 	if(child!=NULL)
 	{
@@ -150,6 +196,7 @@ Type StructSpecifier(Node *n)
 		}
 		child=child->bro;
 	}
+	return NULL;
 }
 
 /*Declarators*/
@@ -176,6 +223,28 @@ FieldList VarDec(Node *n,Type type,int from)		//from=3 func; from=2 struct; from
 			else
 				printf("Error type 15 at line %d: Redefined field ‘%s’\n",child->lineno,f->name);
 			return NULL;
+		}
+		if(from==1&&type->kind==2)		//struct should print DEC code
+		{
+			Operand op=malloc(sizeof(struct Operand_));
+			op->kind=TEMPVAR;
+			op->u.var_no=varCount++;
+
+			InterCode deccode=malloc(sizeof(struct InterCode_));
+			deccode->kind=DEC_K;
+			deccode->u.dec.op=op;
+			deccode->u.dec.size=typeSize(type);
+			insertCode(deccode);
+
+			Operand v=malloc(sizeof(struct Operand_));
+			v->kind=VARIABLE;
+			v->u.value=child->value;
+
+			InterCode addrcode=malloc(sizeof(struct InterCode_));
+			addrcode->kind=RIGHTAT_K;
+			addrcode->u.assign.left=v;
+			addrcode->u.assign.right=op;
+			insertCode(addrcode);
 		}
 		return f;
 	}
@@ -280,37 +349,120 @@ void Stmt(Node *n,Type ret_type)
 {
 	
 	Node*child=n->children;
-	while(child!=NULL)
+	if(child==NULL)return;
+	if(strcmp(child->name,"Exp")==0)
 	{
-		if(strcmp(child->name,"RETURN")==0)
+		Exp(child,NULL);
+		return;
+	}
+	else if(strcmp(child->name,"CompSt")==0)
+	{
+		CompSt(child,ret_type);	
+		return;
+	}
+	else if(strcmp(child->name,"RETURN")==0)
+	{
+		child=child->bro;
+		//new temp
+		Operand op=malloc(sizeof(struct Operand_));
+		op->kind=TEMPVAR;
+		op->u.var_no=varCount++;
+		Type t=Exp(child,op);
+		if(ret_type==NULL||t==NULL)return;
+		if(!typeEqual(ret_type,t))
 		{
-			child=child->bro;
-			Type t=Exp(child);
-			if(ret_type==NULL||t==NULL)return;
-			if(!typeEqual(ret_type,t))
-			{
-				printf("Error type 8 at line %d: Type mismatched for return\n",child->lineno);
-			}
+			printf("Error type 8 at line %d: The return type mismatched\n",child->lineno);
 			return;
 		}
-		else if(strcmp(child->name,"LP")==0)
+		InterCode code=malloc(sizeof(struct InterCode_));
+		code->kind=RETURN_K;
+		code->u.one.op=op;
+		insertCode(code);
+		return;
+	}
+	else if(strcmp(child->name,"IF")==0)
+	{
+		child=child->bro->bro;
+		//new temp
+		Operand lb1=malloc(sizeof(struct Operand_));
+		lb1->kind=LABEL;
+		lb1->u.var_no=labCount++;
+		Operand lb2=malloc(sizeof(struct Operand_));
+		lb2->kind=LABEL;
+		lb2->u.var_no=labCount++;
+		Type t=Exp_Cond(child,lb1,lb2);	//TODO:this function
+		if(t!=NULL&&!((t->kind==0||t->kind==3)&&t->u.basic==INTTYPE))
 		{
-			child=child->bro;
-			Type t=Exp(child);
-			if(t!=NULL&&!((t->kind==0||t->kind==3)&&t->u.basic==INTTYPE))
-			{
-				printf("Error type ? conditional statement wrong type\n");
-			}
+			printf("Error type ? conditional statement wrong type\n");
 		}
-		else if(strcmp(child->name,"Exp")==0)
+		//print label1
+		InterCode code1=malloc(sizeof(struct InterCode_));
+		code1->kind=LABEL_K;
+		code1->u.one.op=lb1;
+		insertCode(code1);
+		child=child->bro->bro;
+		Stmt(child,ret_type);//code2
+
+		InterCode lb2code=malloc(sizeof(struct InterCode_));
+		lb2code->kind=LABEL_K;
+		lb2code->u.one.op=lb2;
+		if(child->next!=NULL)
 		{
-			Exp(child);
+			Operand lb3=malloc(sizeof(struct Operand_));
+			lb3->kind=LABEL;
+			lb3->u.var_no=labCount++;
+			InterCode code2=malloc(sizeof(struct InterCode_));
+			code2->kind=GOTO_K;
+			code2->u.one.op=lb3;
+			insertCode(code2);			//goto label3
+			insertCode(lb2code);		//label2
+			child=child->bro->bro;
+			Stmt(child,ret_type);			//code3
+			InterCode lb3code=malloc(sizeof(struct InterCode_));
+			lb3code->kind=LABEL_K;
+			lb3code->u.one.op=lb3;
+			insertCode(lb3code);		//label3
 		}
-		else if(strcmp(child->name,"Stmt")==0)
+		else
+			insertCode(lb2code);
+	}
+	else if(strcmp(child->name,"WHILE")==0)
+	{
+		Operand lb1=malloc(sizeof(struct Operand_));
+		lb1->kind=LABEL;
+		lb1->u.var_no=labCount++;
+		Operand lb2=malloc(sizeof(struct Operand_));
+		lb2->kind=LABEL;
+		lb2->u.var_no=labCount++;
+		Operand lb3=malloc(sizeof(struct Operand_));
+		lb3->kind=LABEL;
+		lb3->u.var_no=labCount++;
+		child=child->bro->bro;
+
+		InterCode lb1code=malloc(sizeof(struct InterCode_));
+		lb1code->kind=LABEL_K;
+		lb1code->u.one.op=lb1;
+		insertCode(lb1code);		//label 1
+		Type t=Exp_Cond(child,lb2,lb3);	//code1
+		if(t!=NULL&&!((t->kind==0||t->kind==3)&&t->u.basic==INTTYPE))
 		{
-			Stmt(child,ret_type);
+			printf("Error type ? conditional statement wrong type\n");
 		}
-		child=child->bro;
+
+		InterCode lb2code=malloc(sizeof(struct InterCode_));
+		lb2code->kind=LABEL_K;
+		lb2code->u.one.op=lb2;
+		insertCode(lb2code);		//label 2
+		child=child->bro->bro;
+		Stmt(child,ret_type);			//code2
+		InterCode gotolb1=malloc(sizeof(struct InterCode_));
+		gotolb1->kind=GOTO_K;
+		gotolb1->u.one.op=lb1;
+		insertCode(gotolb1);		//goto label1
+		InterCode lb3code=malloc(sizeof(struct InterCode_));
+		lb3code->kind=LABEL_K;
+		lb3code->u.one.op=lb3;
+		insertCode(lb3code);		//label3
 	}
 }
 
@@ -369,17 +521,58 @@ FieldList Dec(Node *n,Type type,int from)
 	Node *child=n->children;
 	FieldList f;
 	f=VarDec(child,type,from);
+	if(f->type->kind==1&&from==1)
+	{
+		//array space
+		Operand op=malloc(sizeof(struct Operand_));
+		op->kind=TEMPVAR;
+		op->u.var_no=varCount++;
+
+		InterCode deccode=malloc(sizeof(struct InterCode_));
+		deccode->kind=DEC_K;
+		deccode->u.dec.op=op;
+		deccode->u.dec.size=typeSize(f->type);
+		insertCode(deccode);
+
+		Operand v=malloc(sizeof(struct Operand_));
+		v->kind=VARIABLE;
+		v->u.value=f->name;
+
+		InterCode addrcode=malloc(sizeof(struct InterCode_));
+		addrcode->kind=RIGHTAT_K;
+		addrcode->u.assign.left=v;
+		addrcode->u.assign.right=op;
+		insertCode(addrcode);
+	}
+
+	if(f==NULL)return NULL;
 	child=child->bro;
 	if(child!=NULL){		
 		if(from==2){	//struct cannot be initialized
 			printf("Error type 15 at line %d: be initialized field ‘%s’\n",child->lineno,f->name);
 			return f;
 		}
+		Operand place=malloc(sizeof(struct Operand_));
+		place->kind=VARIABLE;
+		place->u.value=f->name;
+
 		child=child->bro;
-		Type t=Exp(child);
+		Type t=Exp(child,place);
 		if(t!=NULL&&type!=NULL&&!typeEqual(type,t))
 		{
 			printf("Error type 5 at line %d: Type mismatched for assignment\n",child->lineno);
+		}
+		if(place->kind!=VARIABLE||place->u.value!=f->name)
+		{
+			Operand left=malloc(sizeof(struct Operand_));
+			left->kind=VARIABLE;
+			left->u.value=f->name;
+
+			InterCode asscode=malloc(sizeof(struct InterCode_));
+			asscode->kind=ASSIGN_K;
+			asscode->u.assign.left=left;
+			asscode->u.assign.right=place;
+			insertCode(asscode);
 		}
 	}
 	return f;

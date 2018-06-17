@@ -1,4 +1,4 @@
-#ifndef _SEMANTIC_H__
+ #ifndef _SEMANTIC_H__
 #define _SEMANTIC_H__
 
 #include "symboltable.h"
@@ -26,7 +26,9 @@ FieldList Def(Node* n,int from);
 FieldList DecList(Node *n,Type type,int from);
 FieldList Dec(Node *n,Type type,int from);
 
-Type Exp(Node *n);
-bool Args(Node *n,FieldList f);
+Type Exp(Node *n,Operand place);
+Type Exp_Cond(Node *n,Operand lb1,Operand lb2);
+bool Args(Node *n,FieldList f,Operand arg_list);
+
 
 #endif
