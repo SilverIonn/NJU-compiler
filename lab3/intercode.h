@@ -4,6 +4,7 @@
 enum{
 TEMPVAR , VARIABLE , CONSTANT , VADDRESS , LABEL , FUNCTION , TADDRESS
 };
+//VADDRESS:variable address     TADDRESS:temp variable address
 
 enum{ASSIGN_K , ADD_K , SUB_K , MUL_K , DIV_K , RETURN_K , LABEL_K  , GOTO_K  , IFGOTO_K , READ_K, WRITE_K 
 , CALL_K, ARG_K	, FUNCTION_K , PARAM_K	, DEC_K , RIGHTAT_K };
@@ -79,10 +80,11 @@ extern InterCode code_h,code_t;
 extern int varCount;
 extern int labCount;
 
+int opEqual(Operand op1,Operand op2);
+
 /*optimize code*/
 void optGotoCode();
 void deleteLabel();
-int opEqual(Operand op1,Operand op2);
 void remove_dead_code();
 void same_subexp();
 void figure_const();

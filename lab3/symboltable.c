@@ -305,6 +305,7 @@ int typeSize(Type type)
 		{
 			printf("Cannot translate: Code contains variables of multi-dimensional array type or parameters of array type.\n");
 			exit(-1);
+			// return type->u.array.size;
 		}
 		return	type->u.array.size*typeSize(type->u.array.elem); 
 	}

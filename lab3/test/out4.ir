@@ -1,0 +1,39 @@
+FUNCTION	add	:
+PARAM	temp	
+t6	:=	temp	+	#0	
+t11	:=	temp	+	#4	
+t1	:=	*t6	+	*t11	
+RETURN	t1	
+FUNCTION	main	:
+DEC	t12	8
+op	:=	&t12	
+DEC	t13	5
+r	:=	&t13	
+i	:=	#0	
+j	:=	#0	
+LABEL	label1	:	
+IF	i	>=	#2	GOTO	label3	
+LABEL	label4	:	
+IF	j	>=	#2	GOTO	label6	
+t21	:=	j	*	#4	
+t22	:=	op	+	t21	
+t23	:=	i	+	j	
+*t22	:=	t23	
+j	:=	j	+	#1	
+GOTO	label4	
+LABEL	label6	:	
+t31	:=	r	+	#0	
+t37	:=	i	*	#4	
+t38	:=	t31	+	t37	
+ARG	op	
+t39	:=	CALL	add	
+*t38	:=	t39	
+t42	:=	r	+	#0	
+t48	:=	i	*	#4	
+t49	:=	t42	+	t48	
+WRITE	*t49	
+i	:=	i	+	#1	
+j	:=	#0	
+GOTO	label1	
+LABEL	label3	:	
+RETURN	#0	

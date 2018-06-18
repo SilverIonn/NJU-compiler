@@ -20,11 +20,13 @@ int main(int argc, char* argv[])
 		initTable();
 		Program(root);
 		//optimize inter code
+	//	for(int i=0;i<5;i++){
 		optGotoCode();	//label
 		deleteLabel();
 		figure_const();		//temp
 		remove_dead_code();		//variable
 		same_subexp();
+	//	}
 		if(argc<=2)	return 1;
 		fwriteAllCode(argv[2]);
 	}

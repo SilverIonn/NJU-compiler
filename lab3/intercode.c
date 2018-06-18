@@ -335,11 +335,30 @@ void deleteLabel()
 	}
 
 	tail=NULL;
+
+	//回收内存
 	while(head!=NULL)
 	{
 		Label_No ln=head;
 		head=head->next;
 		free(ln);
+	}
+	//合并重复的Label
+	InterCode p =code_h;
+	while(p!=NULL){
+		InterCode c1 = p;
+		InterCode c2 = p->next;
+		if(c2==NULL){
+			p = p->next;
+			continue;
+		}
+		if(c1->kind==LABEL_K && c2->kind==LABEL_K){
+			c1->u.one.op->u.var_no = c2->u.one.op->u.var_no;
+			p = c2;
+			deleteCode(c1);
+			continue;
+		}
+		p = p->next;
 	}
 }
 
