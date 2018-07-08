@@ -28,7 +28,9 @@ int main(int argc, char* argv[])
 		same_subexp();
 	//	}
 		if(argc<=2)	return 1;
-		fwriteAllCode(argv[2]);
+	//	fwriteAllCode(argv[2]);
+		initReg();
+		printAllCode(argv[2]);
 	}
 	return 0;
 }

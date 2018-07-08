@@ -1,6 +1,8 @@
 #ifndef _INTERCODE_H
 #define _INTERCODE_H
-
+#include"stdlib.h"
+#include"stdio.h"
+#include"string.h"
 enum{
 TEMPVAR , VARIABLE , CONSTANT , VADDRESS , LABEL , FUNCTION , TADDRESS
 };

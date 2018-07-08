@@ -1,6 +1,3 @@
-#include "stdlib.h"
-#include "stdio.h"
-#include "string.h"
 #include "intercode.h"
 
 InterCode code_h=NULL;

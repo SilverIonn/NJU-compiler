@@ -135,6 +135,7 @@
 	#include"node.h"
 	#include"lex.yy.c"
 	#include "semantic.h"
+	#include "objcode.h"
 	Node* root;
 	
 
@@ -159,7 +160,7 @@
 
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 typedef union YYSTYPE
-#line 9 "syntax.y"
+#line 10 "syntax.y"
 {
 	int type_int;
 	float type_float;
@@ -167,7 +168,7 @@ typedef union YYSTYPE
 	Node* node;
 }
 /* Line 193 of yacc.c.  */
-#line 171 "syntax.tab.c"
+#line 172 "syntax.tab.c"
 	YYSTYPE;
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
 # define YYSTYPE_IS_DECLARED 1
@@ -180,7 +181,7 @@ typedef union YYSTYPE
 
 
 /* Line 216 of yacc.c.  */
-#line 184 "syntax.tab.c"
+#line 185 "syntax.tab.c"
 
 #ifdef short
 # undef short
@@ -496,14 +497,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    37,    37,    39,    40,    42,    43,    44,    45,    46,
-      48,    49,    53,    54,    56,    57,    59,    60,    62,    66,
-      67,    69,    70,    71,    72,    74,    75,    77,    81,    82,
-      84,    85,    87,    88,    89,    90,    91,    92,    93,    94,
-      95,    96,   100,   101,   103,   104,   106,   107,   109,   110,
-     114,   115,   116,   117,   118,   119,   120,   121,   122,   123,
-     124,   125,   126,   127,   128,   129,   130,   131,   132,   133,
-     135,   136
+       0,    38,    38,    40,    41,    43,    44,    45,    46,    47,
+      49,    50,    54,    55,    57,    58,    60,    61,    63,    67,
+      68,    70,    71,    72,    73,    75,    76,    78,    82,    83,
+      85,    86,    88,    89,    90,    91,    92,    93,    94,    95,
+      96,    97,   101,   102,   104,   105,   107,   108,   110,   111,
+     115,   116,   117,   118,   119,   120,   121,   122,   123,   124,
+     125,   126,   127,   128,   129,   130,   131,   132,   133,   134,
+     136,   137
 };
 #endif
 
@@ -1529,358 +1530,358 @@ yyreduce:
   switch (yyn)
     {
         case 2:
-#line 37 "syntax.y"
+#line 38 "syntax.y"
     {(yyval.node)=initNode("Program","");addChild((yyval.node),(yyvsp[(1) - (1)].node));root=(yyval.node);;}
     break;
 
   case 3:
-#line 39 "syntax.y"
+#line 40 "syntax.y"
     {(yyval.node)=initNode("ExtDefList","");addChild((yyval.node),(yyvsp[(2) - (2)].node));addChild((yyval.node),(yyvsp[(1) - (2)].node));;}
     break;
 
   case 4:
-#line 40 "syntax.y"
+#line 41 "syntax.y"
     {(yyval.node)=initNode("ExtDefList","");;}
     break;
 
   case 5:
-#line 42 "syntax.y"
+#line 43 "syntax.y"
     {(yyval.node)=initNode("ExtDef","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
   case 6:
-#line 43 "syntax.y"
+#line 44 "syntax.y"
     {(yyval.node)=initNode("ExtDef","");addChild((yyval.node),(yyvsp[(2) - (2)].node));addChild((yyval.node),(yyvsp[(1) - (2)].node));;}
     break;
 
   case 7:
-#line 44 "syntax.y"
-    {(yyval.node)=initNode("ExtDef","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
-    break;
-
-  case 8:
 #line 45 "syntax.y"
     {(yyval.node)=initNode("ExtDef","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
-  case 9:
+  case 8:
 #line 46 "syntax.y"
+    {(yyval.node)=initNode("ExtDef","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
+    break;
+
+  case 9:
+#line 47 "syntax.y"
     {errorCount++;;}
     break;
 
   case 10:
-#line 48 "syntax.y"
+#line 49 "syntax.y"
     {(yyval.node)=initNode("ExtDecList","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
   case 11:
-#line 49 "syntax.y"
+#line 50 "syntax.y"
     {(yyval.node)=initNode("ExtDecList","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
   case 12:
-#line 53 "syntax.y"
-    {(yyval.node)=initNode("Specifier","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
-    break;
-
-  case 13:
 #line 54 "syntax.y"
     {(yyval.node)=initNode("Specifier","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
+  case 13:
+#line 55 "syntax.y"
+    {(yyval.node)=initNode("Specifier","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
+    break;
+
   case 14:
-#line 56 "syntax.y"
+#line 57 "syntax.y"
     {(yyval.node)=initNode("StructSpecifier","");addChild((yyval.node),(yyvsp[(5) - (5)].node));addChild((yyval.node),(yyvsp[(4) - (5)].node));addChild((yyval.node),(yyvsp[(3) - (5)].node));addChild((yyval.node),(yyvsp[(2) - (5)].node));addChild((yyval.node),(yyvsp[(1) - (5)].node));;}
     break;
 
   case 15:
-#line 57 "syntax.y"
+#line 58 "syntax.y"
     {(yyval.node)=initNode("StructSpecifier","");addChild((yyval.node),(yyvsp[(2) - (2)].node));addChild((yyval.node),(yyvsp[(1) - (2)].node));;}
     break;
 
   case 16:
-#line 59 "syntax.y"
+#line 60 "syntax.y"
     {(yyval.node)=initNode("OptTag","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
   case 17:
-#line 60 "syntax.y"
+#line 61 "syntax.y"
     {(yyval.node)=initNode("OptTag","");;}
     break;
 
   case 18:
-#line 62 "syntax.y"
+#line 63 "syntax.y"
     {(yyval.node)=initNode("Tag","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
   case 19:
-#line 66 "syntax.y"
+#line 67 "syntax.y"
     {(yyval.node)=initNode("VarDec","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
   case 20:
-#line 67 "syntax.y"
+#line 68 "syntax.y"
     {(yyval.node)=initNode("VarDec","");addChild((yyval.node),(yyvsp[(4) - (4)].node));addChild((yyval.node),(yyvsp[(3) - (4)].node));addChild((yyval.node),(yyvsp[(2) - (4)].node));addChild((yyval.node),(yyvsp[(1) - (4)].node));;}
     break;
 
   case 21:
-#line 69 "syntax.y"
+#line 70 "syntax.y"
     {(yyval.node)=initNode("FunDec","");addChild((yyval.node),(yyvsp[(4) - (4)].node));addChild((yyval.node),(yyvsp[(3) - (4)].node));addChild((yyval.node),(yyvsp[(2) - (4)].node));addChild((yyval.node),(yyvsp[(1) - (4)].node));;}
     break;
 
   case 22:
-#line 70 "syntax.y"
+#line 71 "syntax.y"
     {(yyval.node)=initNode("FunDec","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
   case 23:
-#line 71 "syntax.y"
-    {errorCount++;;}
-    break;
-
-  case 24:
 #line 72 "syntax.y"
     {errorCount++;;}
     break;
 
+  case 24:
+#line 73 "syntax.y"
+    {errorCount++;;}
+    break;
+
   case 25:
-#line 74 "syntax.y"
+#line 75 "syntax.y"
     {(yyval.node)=initNode("VarList","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
   case 26:
-#line 75 "syntax.y"
+#line 76 "syntax.y"
     {(yyval.node)=initNode("VarList","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
   case 27:
-#line 77 "syntax.y"
+#line 78 "syntax.y"
     {(yyval.node)=initNode("ParamDec","");addChild((yyval.node),(yyvsp[(2) - (2)].node));addChild((yyval.node),(yyvsp[(1) - (2)].node));;}
     break;
 
   case 28:
-#line 81 "syntax.y"
+#line 82 "syntax.y"
     {(yyval.node)=initNode("CompSt","");addChild((yyval.node),(yyvsp[(4) - (4)].node));addChild((yyval.node),(yyvsp[(3) - (4)].node));addChild((yyval.node),(yyvsp[(2) - (4)].node));addChild((yyval.node),(yyvsp[(1) - (4)].node));;}
     break;
 
   case 29:
-#line 82 "syntax.y"
+#line 83 "syntax.y"
     {errorCount++;;}
     break;
 
   case 30:
-#line 84 "syntax.y"
+#line 85 "syntax.y"
     {(yyval.node)=initNode("StmtList","");addChild((yyval.node),(yyvsp[(2) - (2)].node));addChild((yyval.node),(yyvsp[(1) - (2)].node));;}
     break;
 
   case 31:
-#line 85 "syntax.y"
+#line 86 "syntax.y"
     {(yyval.node)=initNode("StmtList","");;}
     break;
 
   case 32:
-#line 87 "syntax.y"
+#line 88 "syntax.y"
     {(yyval.node)=initNode("Stmt","");addChild((yyval.node),(yyvsp[(2) - (2)].node));addChild((yyval.node),(yyvsp[(1) - (2)].node));;}
     break;
 
   case 33:
-#line 88 "syntax.y"
+#line 89 "syntax.y"
     {(yyval.node)=initNode("Stmt","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
   case 34:
-#line 89 "syntax.y"
+#line 90 "syntax.y"
     {(yyval.node)=initNode("Stmt","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
   case 35:
-#line 90 "syntax.y"
+#line 91 "syntax.y"
     {(yyval.node)=initNode("Stmt","");addChild((yyval.node),(yyvsp[(5) - (5)].node));addChild((yyval.node),(yyvsp[(4) - (5)].node));addChild((yyval.node),(yyvsp[(3) - (5)].node));addChild((yyval.node),(yyvsp[(2) - (5)].node));addChild((yyval.node),(yyvsp[(1) - (5)].node));;}
     break;
 
   case 36:
-#line 91 "syntax.y"
+#line 92 "syntax.y"
     {(yyval.node)=initNode("Stmt","");addChild((yyval.node),(yyvsp[(7) - (7)].node));addChild((yyval.node),(yyvsp[(6) - (7)].node));addChild((yyval.node),(yyvsp[(5) - (7)].node));addChild((yyval.node),(yyvsp[(4) - (7)].node));addChild((yyval.node),(yyvsp[(3) - (7)].node));addChild((yyval.node),(yyvsp[(2) - (7)].node));addChild((yyval.node),(yyvsp[(1) - (7)].node));;}
     break;
 
   case 37:
-#line 92 "syntax.y"
+#line 93 "syntax.y"
     {errorCount++;;}
     break;
 
   case 38:
-#line 93 "syntax.y"
+#line 94 "syntax.y"
     {(yyval.node)=initNode("Stmt","");addChild((yyval.node),(yyvsp[(5) - (5)].node));addChild((yyval.node),(yyvsp[(4) - (5)].node));addChild((yyval.node),(yyvsp[(3) - (5)].node));addChild((yyval.node),(yyvsp[(2) - (5)].node));addChild((yyval.node),(yyvsp[(1) - (5)].node));;}
     break;
 
   case 39:
-#line 94 "syntax.y"
-    {errorCount++;;}
-    break;
-
-  case 40:
 #line 95 "syntax.y"
     {errorCount++;;}
     break;
 
-  case 41:
+  case 40:
 #line 96 "syntax.y"
     {errorCount++;;}
     break;
 
+  case 41:
+#line 97 "syntax.y"
+    {errorCount++;;}
+    break;
+
   case 42:
-#line 100 "syntax.y"
+#line 101 "syntax.y"
     {(yyval.node)=initNode("DefList","");addChild((yyval.node),(yyvsp[(2) - (2)].node));addChild((yyval.node),(yyvsp[(1) - (2)].node));;}
     break;
 
   case 43:
-#line 101 "syntax.y"
+#line 102 "syntax.y"
     {(yyval.node)=initNode("DefList","");;}
     break;
 
   case 44:
-#line 103 "syntax.y"
+#line 104 "syntax.y"
     {(yyval.node)=initNode("Def","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
   case 45:
-#line 104 "syntax.y"
+#line 105 "syntax.y"
     {errorCount++;;}
     break;
 
   case 46:
-#line 106 "syntax.y"
+#line 107 "syntax.y"
     {(yyval.node)=initNode("DecList","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
   case 47:
-#line 107 "syntax.y"
+#line 108 "syntax.y"
     {(yyval.node)=initNode("DecList","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
   case 48:
-#line 109 "syntax.y"
+#line 110 "syntax.y"
     {(yyval.node)=initNode("Dec","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
   case 49:
-#line 110 "syntax.y"
+#line 111 "syntax.y"
     {(yyval.node)=initNode("Dec","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
   case 50:
-#line 114 "syntax.y"
-    {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
-    break;
-
-  case 51:
 #line 115 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
-  case 52:
+  case 51:
 #line 116 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
-  case 53:
+  case 52:
 #line 117 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
-  case 54:
+  case 53:
 #line 118 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
-  case 55:
+  case 54:
 #line 119 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
-  case 56:
+  case 55:
 #line 120 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
-  case 57:
+  case 56:
 #line 121 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
-  case 58:
+  case 57:
 #line 122 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
-  case 59:
+  case 58:
 #line 123 "syntax.y"
-    {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(2) - (2)].node));addChild((yyval.node),(yyvsp[(1) - (2)].node));;}
+    {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
-  case 60:
+  case 59:
 #line 124 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(2) - (2)].node));addChild((yyval.node),(yyvsp[(1) - (2)].node));;}
     break;
 
-  case 61:
+  case 60:
 #line 125 "syntax.y"
+    {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(2) - (2)].node));addChild((yyval.node),(yyvsp[(1) - (2)].node));;}
+    break;
+
+  case 61:
+#line 126 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(4) - (4)].node));addChild((yyval.node),(yyvsp[(3) - (4)].node));addChild((yyval.node),(yyvsp[(2) - (4)].node));addChild((yyval.node),(yyvsp[(1) - (4)].node));;}
     break;
 
   case 62:
-#line 126 "syntax.y"
+#line 127 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
   case 63:
-#line 127 "syntax.y"
+#line 128 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(4) - (4)].node));addChild((yyval.node),(yyvsp[(3) - (4)].node));addChild((yyval.node),(yyvsp[(2) - (4)].node));addChild((yyval.node),(yyvsp[(1) - (4)].node));;}
     break;
 
   case 64:
-#line 128 "syntax.y"
+#line 129 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
   case 65:
-#line 129 "syntax.y"
-    {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
-    break;
-
-  case 66:
 #line 130 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
-  case 67:
+  case 66:
 #line 131 "syntax.y"
     {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
-  case 68:
+  case 67:
 #line 132 "syntax.y"
-    {errorCount++;;}
+    {(yyval.node)=initNode("Exp","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
-  case 69:
+  case 68:
 #line 133 "syntax.y"
     {errorCount++;;}
     break;
 
+  case 69:
+#line 134 "syntax.y"
+    {errorCount++;;}
+    break;
+
   case 70:
-#line 135 "syntax.y"
+#line 136 "syntax.y"
     {(yyval.node)=initNode("Args","");addChild((yyval.node),(yyvsp[(3) - (3)].node));addChild((yyval.node),(yyvsp[(2) - (3)].node));addChild((yyval.node),(yyvsp[(1) - (3)].node));;}
     break;
 
   case 71:
-#line 136 "syntax.y"
+#line 137 "syntax.y"
     {(yyval.node)=initNode("Args","");addChild((yyval.node),(yyvsp[(1) - (1)].node));;}
     break;
 
 
 /* Line 1267 of yacc.c.  */
-#line 1884 "syntax.tab.c"
+#line 1885 "syntax.tab.c"
       default: break;
     }
   YY_SYMBOL_PRINT ("-> $$ =", yyr1[yyn], &yyval, &yyloc);
@@ -2094,7 +2095,7 @@ yyreturn:
 }
 
 
-#line 139 "syntax.y"
+#line 140 "syntax.y"
 
 int yyerror(char* msg){
 		

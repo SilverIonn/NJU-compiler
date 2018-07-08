@@ -2,6 +2,7 @@
 	#include"node.h"
 	#include"lex.yy.c"
 	#include "semantic.h"
+	#include "objcode.h"
 	Node* root;
 	
 %}
